@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('templates/librariesCSS.html') %>
+    <title>
+        <%= titulo %>
+    </title>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>estas en el home</h1>
+
+        <form action="/auth/cerrar" method="post">
+            <button type="submit" class="close btn btn-danger" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+        </form>
+    </div>
+
+    <%- include('templates/librariesJS.html') %>
+</body>
+
+</html>
