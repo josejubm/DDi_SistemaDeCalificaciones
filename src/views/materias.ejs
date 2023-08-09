@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('templates/librariesCSS.html') %>
+        <title>
+            <%= titulo %>
+        </title>
+</head>
+
+<body>
+    <%- include('templates/header.html') %>
+
+
+
+        <div class="container mt-5">
+            <h1 class="text-center mb-4">
+                <%= titulo %>
+            </h1>
+            <div class="row">
+                <div class="col-md-4">
+                    <h2>Registrar Nueva Materia</h2>
+                    <form action="/materias/agregar" method="POST">
+                        <div class="mb-3">
+                            <label for="tfClave" class="form-label">Clave</label>
+                            <input type="text" class="form-control" id="tfClave" name="tfClave" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tfNombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="tfNombre" name="tfNombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tfCuatrimestre" class="form-label">Cuatrimestre</label>
+                            <select class="form-select" id="tfCuatrimestre" name="tfCuatrimestre" required>
+                                <option value="" selected disabled>Selecciona un cuatrimestre</option>
+                                <option value="1">1° Cuatrimestre</option>
+                                <option value="2">2° Cuatrimestre</option>
+                                <option value="3">3° Cuatrimestre</option>
+                                <option value="4">4° Cuatrimestre</option>
+                                <option value="5">5° Cuatrimestre</option>
+                                <option value="6">6° Cuatrimestre</option>
+                                <option value="7">7° Cuatrimestre</option>
+                                <option value="8">8° Cuatrimestre</option>
+                                <option value="9">9° Cuatrimestre</option>
+                                <option value="10">10° Cuatrimestre</option>
+                                <option value="11">11° Cuatrimestre</option>
+                                <option value="12">12° Cuatrimestre</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                    </form>
+                </div>
+                <div class="col-md-8">
+                    <h3 class="mb-3">Tabla MATERIAS</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Clave Mat</th>
+                                <th>Nombre</th>
+                                <th>Cuatrimestre</th>
+                                <th colspan="2">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(var i=0; i < data.length; i++) { %>
+                                <tr>
+                                    <td>
+                                        <%= data[i].ClaveMat %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].Nombre %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].Cuatrimestre %>
+                                    </td>
+                                    <td width="50">
+                                        <form action="/materias/editar" method="post">
+                                            <input type="hidden" name="tfNL" value="<%= data[i].NL %>">
+                                            <button type="submit" class="btn btn-sm btn-warning">Editar</button>
+                                        </form>
+                                    </td>
+                                    <td width="50">
+                                        <a href="/materias/eliminar/<%= data[i].ClaveMat %>"
+                                            class="btn btn-sm btn-danger">Eliminar</a>
+                                    </td>
+                                </tr>
+                                <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br>
+        <%- include('templates/footer.html') %>
+            <%- include('templates/librariesJS.html') %>
+</body>
+
+</html>

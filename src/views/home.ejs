@@ -5,24 +5,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('templates/librariesCSS.html') %>
-    <title>
-        <%= titulo %>
-    </title>
+        <title>
+            <%= titulo %>
+        </title>
+        <style>
+            .card {
+                margin-bottom: 20px;
+                width: 70%;
+                margin-left: auto;
+                margin-right: auto;
+                
+            }
+        </style>
 </head>
 
 <body>
+    <%- include('templates/header.html') %>
 
-    <div class="container">
-        <h1>estas en el home</h1>
-
-        <form action="/auth/cerrar" method="post">
-            <button type="submit" class="close btn btn-danger" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-
-        </form>
+    <div class="container mt-5">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            <div class="col mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top rounded-top" alt="Imagen 1">
+                    <div class="card-body">
+                        <h5 class="card-title">ALUMNOS</h5>
+                        <p class="card-text">Contenido de la tarjeta 1.</p>
+                        <a href="/alumnos" class="btn btn-success"> ir a alumnos</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top rounded-top" alt="Imagen 2">
+                    <div class="card-body">
+                        <h5 class="card-title">MATERIAS</h5>
+                        <p class="card-text">Contenido de la tarjeta 2.</p>
+                        <a href="/materias" class="btn btn-success"> ir a materias</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top rounded-top" alt="Imagen 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Tarjeta 1</h5>
+                        <p class="card-text">Contenido de la tarjeta 1.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top rounded-top" alt="Imagen 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Tarjeta 2</h5>
+                        <p class="card-text">Contenido de la tarjeta 2.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top rounded-top" alt="Imagen 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Tarjeta 1</h5>
+                        <p class="card-text">Contenido de la tarjeta 1.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top rounded-top" alt="Imagen 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Tarjeta 2</h5>
+                        <p class="card-text">Contenido de la tarjeta 2.</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
     </div>
 
+    <%- include('templates/footer.html') %>
     <%- include('templates/librariesJS.html') %>
 </body>
 

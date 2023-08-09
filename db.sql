@@ -60,7 +60,7 @@ CREATE TABLE `calificaciones`(
 
 -- Insertar registros de docentes
 INSERT INTO `docentes` (`CProfesional`, `Nombre`, `Paterno`, `Materno`, `Usuario`, `Contrasena`)
-VALUES ('123456', 'Juan', 'Perez', 'Gomez', 'juan123', 'juan123');
+VALUES ('123456', 'Juan', 'Perez', 'Gomez', 'jose', 'jose');
 
 -- Insertar registros de domicilios
 INSERT INTO `domicilios` (`Colonia`, `Calle`, `Numero`)

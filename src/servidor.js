@@ -37,7 +37,8 @@ servidor.use(
 servidor.use("/", require("./routes/index.js")); // Ruta principal (index)
 
 servidor.use("/home", require("./routes/home.js")); // Rutas relacionadas con el home
-
+servidor.use("/alumnos", require("./routes/alumnos.js"));
+servidor.use("/materias", require("./routes/materias.js"));
 servidor.use("/auth", require("./routes/auth.js")); // Rutas relacionadas con sesiones
 servidor.use(express.static(path.join(__dirname, "public"))); // Archivos estáticos 
 

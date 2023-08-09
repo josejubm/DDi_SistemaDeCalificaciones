@@ -8,8 +8,10 @@ route.use(authMiddleware.verificarSesion);
 // Ruta para la página de inicio después de iniciar sesión
 route.get("/", function(req, res) {
     res.render("home.ejs", {
-        titulo: "HOME"
+        titulo: "HOME",
+        usuario: req.session.usuario
     });
 });
+
 
 module.exports = route;

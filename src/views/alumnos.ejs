@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('templates/librariesCSS.html') %>
+    <title>
+        <%= titulo %>
+    </title>
+</head>
+
+<body>
+    <%- include('templates/header.html') %>
+
+    <div class="container">
+        <h1><%= titulo %></h1>
+            <h3 class="mb-3">Tabla Alumnos</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Matricula</th>
+                        <th>Nombre</th>
+                        <th>Paterno</th>
+                        <th>Materno</th>
+                        <th>Genero</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Edad</th>
+                        <th>Domicilio</th>
+                        <th colspan="2">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i=0; i < data.length; i++) { %>
+                        <tr>
+                            <td>
+                                <%= data[i].Matricula %>
+                            </td>
+                            <td>
+                                <%= data[i].Nombre %>
+                            </td>
+                            <td>
+                                <%= data[i].Paterno %>
+                            </td>
+                            <td>
+                                <%= data[i].Materno %>
+                            </td>
+                            <td>
+                                <%= data[i].Genero %>
+                            </td>
+                            <td>
+                                <%= new Date(data[i].FechaNac).toLocaleDateString() %>
+                            </td>
+                            <td>
+                                <%= data[i].Edad %>
+                            </td>
+                            <td>
+                                Col: <%= data[i].Colonia %>, C: <%= data[i].Calle %>, N: <%= data[i].Numero %>
+                            </td>
+                            <td width="50">
+                                <form action="/alumnos/editar" method="post">
+                                    <input type="hidden" name="tfNL" value="<%= data[i].NL %>">
+                                    <button type="submit" class="btn btn-sm btn-warning">Editar</button>
+                                </form>
+                            </td>
+                            <td width="50">
+                                <a href="/alumnos/eliminar/<%= data[i].NL %>" class="btn btn-sm btn-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>
+    </div>
+
+    <%- include('templates/footer.html') %>
+    <%- include('templates/librariesJS.html') %>
+</body>
+
+</html>
