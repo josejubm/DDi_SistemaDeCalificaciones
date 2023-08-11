@@ -13,7 +13,6 @@ const dbOptions = {
   database: "SistemaCalificacionesDB",
 };
 
-
 const servidor = express();
 
 // Configuraciones (settings)

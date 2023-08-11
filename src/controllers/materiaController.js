@@ -1,3 +1,5 @@
+
+
 const controlador = {};
 
 controlador.mostrar = (req, res) => {
@@ -31,69 +33,77 @@ controlador.agregar = (req, res) => {
             if (errorInsercion) {
                 res.json({ error: errorInsercion.message });
             } else {
-                res.redirect("/materias");
+                res.send(nuevaMateria.Cuatrimestre);
             }
         });
     });
 };
 
+controlador.mostrarPorCuatrimestre = (req, res) => {
+    const cuatrimestre = req.query.cuatrimestre;
+    req.getConnection((errorConexion, conn) => {
+        if (errorConexion) throw errorConexion;
+        let query = "SELECT * FROM materias";
+        const queryParams = [];
+
+        if (cuatrimestre !== "0") {
+            query += " WHERE Cuatrimestre = ?";
+            queryParams.push(cuatrimestre);
+        }
+        conn.query(query, queryParams, (error, resultados) => {
+            if (error) {
+                res.json({ error: error.message });
+            }
+
+            // Construir la tabla HTML con los resultados
+            let tablaHtml = "<table class='table table-bordered' id='TablaMaterias'>";
+            tablaHtml += "<thead><tr><th>N</th><th>Clave Mat</th><th>Nombre</th><th>Cuatrimestre</th><th colspan='2'>Opciones</th></tr></thead>";
+            tablaHtml += "<tbody>";
+
+            for (let i = 0; i < resultados.length; i++) {
+                tablaHtml += "<tr id='" + resultados[i].ClaveMat + "' >";
+                tablaHtml += "<td>" + (i + 1) + "</td>";
+                tablaHtml += "<td>" + resultados[i].ClaveMat + "</td>";
+                tablaHtml += "<td>" + resultados[i].Nombre + "</td>";
+                tablaHtml += "<td>" + resultados[i].Cuatrimestre + "</td>";
+                tablaHtml += "<td width='50'><button class='btn btn-sm btn-warning editarMateria' data-clave='" + resultados[i].ClaveMat + "'>Editar</button></td>";
+                tablaHtml += "<td width='50'><button class='btn btn-sm btn-danger eliminarMateria' data-clave=" + resultados[i].ClaveMat + ">Eliminar</button></td>";
+                tablaHtml += "</tr>";
+            }
+
+            tablaHtml += "</tbody></table>";
+
+            res.send(tablaHtml);
+        });
+    });
+};
 
 controlador.editar = (req, res) => {
-    const NL = parseInt(req.body.tfNL, 10);
-
+    const { OldClaveMat } = req.params;
+    const nuevaInfo = {
+        ClaveMat: req.body.ClaveMat,
+        Nombre: req.body.Nombre,
+        Cuatrimestre: req.body.Cuatrimestre,
+    };
     req.getConnection((err, conn) => {
         if (err) {
             console.error("Error en la conexión:", err);
             return res.status(500).send("Error en la conexión");
         }
-
-        conn.query("SELECT * FROM alumnos", [], (error, resultados) => {
-            if (error) {
-                console.error("Error en la consulta:", error);
-                return res.status(500).send("Error en la consulta");
-            }
-
-            conn.query("SELECT * FROM alumnos WHERE NL = ?", [NL], (error, row) => {
-                if (error) {
-                    console.error("Error en la consulta:", error);
-                    return res.status(500).send("Error en la consulta");
-                }
-
-                const datos = resultados;
-                const fila = row.length > 0 ? row[0] : {}; // Si row tiene resultados, usa el primer elemento, de lo contrario, crea un objeto vacío
-
-                console.log("datos", datos);
-                console.log("fila", fila);
-                res.render("alumnos_editar.ejs", { data: datos, fila: fila });
-            });
-        });
-    });
-};
-
-controlador.modificar = (req, res) => {
-    const { NL } = req.params;
-    const reg = {
-        NL: parseInt(req.body.tfNL, 10),
-        Nombre: req.body.tfNombre,
-        Paterno: req.body.tfPaterno,
-        Materno: req.body.tfMaterno,
-    };
-
-    req.getConnection((err, conn) => {
-        conn.query("UPDATE alumnos SET NL = ?, Nombre = ?, Paterno = ?, Materno = ? WHERE NL = ?",
-            [reg.NL, reg.Nombre, reg.Paterno, reg.Materno, NL],
+        conn.query("UPDATE materias SET ClaveMat = ?, Nombre = ?, Cuatrimestre = ? WHERE ClaveMat = ?",
+            [nuevaInfo.ClaveMat, nuevaInfo.Nombre, nuevaInfo.Cuatrimestre, OldClaveMat],
             (error, resultados) => {
                 if (error) {
                     console.error("Error en la consulta:", error);
                     return res.status(500).send("Error en la consulta");
                 }
-                res.redirect("/alumnos");
+                res.send(nuevaInfo.Cuatrimestre);
             });
     });
 };
 
 controlador.eliminar = (req, res) => {
-    const { ClaveMat } = req.params;
+    const { ClaveMat } = req.query;
 
     req.getConnection((errorConexion, conn) => {
         if (errorConexion) throw errorConexion;
@@ -101,9 +111,10 @@ controlador.eliminar = (req, res) => {
             if (error) {
                 res.json({ error: error.message });
             }
-            res.redirect("/materias");
+            res.send(req.query.cuatrimestre);
         });
     });
 };
+
 
 module.exports = controlador;

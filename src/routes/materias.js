@@ -8,9 +8,8 @@ route.use(authMiddleware.verificarSesion);
 
 route.get("/", controladorMateria.mostrar);
 route.post("/agregar", controladorMateria.agregar); 
-route.get("/eliminar/:ClaveMat", controladorMateria.eliminar);
-
-/* route.post("/editar", controladorAlumno.editar);
- route.post("/modificar/:NL", controladorAlumno.modificar); */
+route.get("/eliminar", controladorMateria.eliminar);
+route.get("/mostrarC", controladorMateria.mostrarPorCuatrimestre);
+route.post("/editar/:OldClaveMat", controladorMateria.editar);
 
 module.exports = route;

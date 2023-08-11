@@ -13,51 +13,49 @@
 <body>
     <%- include('templates/header.html') %>
 
-
-
         <div class="container mt-5">
-            <h1 class="text-center mb-4">
-                <%= titulo %>
-            </h1>
             <div class="row">
-                <div class="col-md-4">
-                    <h2>Registrar Nueva Materia</h2>
-                    <form action="/materias/agregar" method="POST">
-                        <div class="mb-3">
-                            <label for="tfClave" class="form-label">Clave</label>
-                            <input type="text" class="form-control" id="tfClave" name="tfClave" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tfNombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="tfNombre" name="tfNombre" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tfCuatrimestre" class="form-label">Cuatrimestre</label>
-                            <select class="form-select" id="tfCuatrimestre" name="tfCuatrimestre" required>
-                                <option value="" selected disabled>Selecciona un cuatrimestre</option>
-                                <option value="1">1° Cuatrimestre</option>
-                                <option value="2">2° Cuatrimestre</option>
-                                <option value="3">3° Cuatrimestre</option>
-                                <option value="4">4° Cuatrimestre</option>
-                                <option value="5">5° Cuatrimestre</option>
-                                <option value="6">6° Cuatrimestre</option>
-                                <option value="7">7° Cuatrimestre</option>
-                                <option value="8">8° Cuatrimestre</option>
-                                <option value="9">9° Cuatrimestre</option>
-                                <option value="10">10° Cuatrimestre</option>
-                                <option value="11">11° Cuatrimestre</option>
-                                <option value="12">12° Cuatrimestre</option>
-                            </select>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">Registrar</button>
-                    </form>
+                <h1 class="text-center mb-4" id="tituloPrincipal">Todas las Materias</h1>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="filtroCuatrimestre" class="form-label">Filtrar por Cuatrimestre</label>
+                        <select class="form-select" id="filtroCuatrimestre">
+                            <option value="0" selected>Todas las Materias</option>
+                            <option value="1">1° Cuatrimestre</option>
+                            <option value="2">2° Cuatrimestre</option>
+                            <option value="3">3° Cuatrimestre</option>
+                            <option value="4">4° Cuatrimestre</option>
+                            <option value="5">5° Cuatrimestre</option>
+                            <option value="6">6° Cuatrimestre</option>
+                            <option value="7">7° Cuatrimestre</option>
+                            <option value="8">8° Cuatrimestre</option>
+                            <option value="9">9° Cuatrimestre</option>
+                            <option value="10">10° Cuatrimestre</option>
+                            <option value="11">11° Cuatrimestre</option>
+                            <option value="12">12° Cuatrimestre</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="buscador" class="form-label">Buscar</label>
+                        <input type="text" class="form-control" id="buscador" placeholder="Buscar por nombre">
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop"id="modalMaterias" >
+                        Agregar Nuevo
+                    </button>   
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12" id="content">
                     <h3 class="mb-3">Tabla MATERIAS</h3>
-                    <table class="table">
+                    <table class="table table-bordered" id="TablaMaterias">
                         <thead>
                             <tr>
+                                <th>N</th>
                                 <th>Clave Mat</th>
                                 <th>Nombre</th>
                                 <th>Cuatrimestre</th>
@@ -65,37 +63,88 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% for(var i=0; i < data.length; i++) { %>
-                                <tr>
-                                    <td>
-                                        <%= data[i].ClaveMat %>
-                                    </td>
-                                    <td>
-                                        <%= data[i].Nombre %>
-                                    </td>
-                                    <td>
-                                        <%= data[i].Cuatrimestre %>
-                                    </td>
-                                    <td width="50">
-                                        <form action="/materias/editar" method="post">
-                                            <input type="hidden" name="tfNL" value="<%= data[i].NL %>">
-                                            <button type="submit" class="btn btn-sm btn-warning">Editar</button>
-                                        </form>
-                                    </td>
-                                    <td width="50">
-                                        <a href="/materias/eliminar/<%= data[i].ClaveMat %>"
-                                            class="btn btn-sm btn-danger">Eliminar</a>
-                                    </td>
-                                </tr>
-                                <% } %>
+                            <% var count=0 %>
+                                <% for(var i=0; i < data.length; i++) { %>
+                                    <% count++ ;%>
+
+                                        <tr id="<%= data[i].ClaveMat %>">
+                                            <td>
+                                                <%= count %>
+                                            </td>
+                                            <td>
+                                                <%= data[i].ClaveMat %>
+                                            </td>
+                                            <td>
+                                                <%= data[i].Nombre %>
+                                            </td>
+                                            <td>
+                                                <%= data[i].Cuatrimestre %>
+                                            </td>
+                                            <td width="50">
+                                                <button class="btn btn-sm btn-warning editarMateria"
+                                                    data-clave="<%= data[i].ClaveMat %>">Editar</button>
+                                            </td>
+                                            <td width="50">
+                                                <button class="btn btn-sm btn-danger eliminarMateria" data-clave="<%= data[i].ClaveMat %>">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                        <% } %>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <br>
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formularioMateria">
+                            <div class="mb-3">
+                                <label for="tfClave" class="form-label">Clave</label>
+                                <input type="text" class="form-control" id="tfClave" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tfNombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="tfNombre"  required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tfCuatrimestre" class="form-label">Cuatrimestre</label>
+                                <select class="form-select" id="tfCuatrimestre" required>
+                                    <option value="" selected disabled>Selecciona un cuatrimestre</option>
+                                    <option value="1">1° Cuatrimestre</option>
+                                    <option value="2">2° Cuatrimestre</option>
+                                    <option value="3">3° Cuatrimestre</option>
+                                    <option value="4">4° Cuatrimestre</option>
+                                    <option value="5">5° Cuatrimestre</option>
+                                    <option value="6">6° Cuatrimestre</option>
+                                    <option value="7">7° Cuatrimestre</option>
+                                    <option value="8">8° Cuatrimestre</option>
+                                    <option value="9">9° Cuatrimestre</option>
+                                    <option value="10">10° Cuatrimestre</option>
+                                    <option value="11">11° Cuatrimestre</option>
+                                    <option value="12">12° Cuatrimestre</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="form-btn-agregar">Registrar</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <%- include('templates/footer.html') %>
             <%- include('templates/librariesJS.html') %>
+                <script src="/js/materias.js"></script>
 </body>
 
 </html>
