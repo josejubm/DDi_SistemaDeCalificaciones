@@ -98,6 +98,8 @@ $(document).ready(function () {
             type: "POST"
         }).done(function (resultado) {
 
+            console.log(resultado);
+
             if (resultado !== cuatrimestreDePagina) {
                 resultado = cuatrimestreDePagina;
             }

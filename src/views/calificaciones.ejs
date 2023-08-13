@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('templates/librariesCSS.html') %>
+        <title>
+            <%= titulo %>
+        </title>
+</head>
+
+<body>
+    <%- include('templates/header.html') %>
+        <div class="container mt-5">
+            <!-- Banner -->
+            <div class="row">
+                <div class="col">
+                    <h1>Calificaciones</h1>
+                </div>
+            </div>
+
+            <!-- Formulario para seleccionar materia y cuatrimestre -->
+            <div class="row mt-3">
+                <div class="col">
+                    <form id="seleccionForm" method="post" action="SeleccionCalificacionesServlet"
+                        class="d-flex align-items-end">
+                        <div class="mb-3 me-2">
+                            <label for="tfMateria" class="form-label">Materia</label>
+                            <select class="form-select" id="tfMateria" name="tfMateria" required>
+                                <option value="" disabled selected>Seleccione una materia</option>
+                                <% for(var i=0; i < dataMaterias.length; i++) { %>
+                                    <option value="<%= dataMaterias[i].ClaveMat %>">
+                                        <%= dataMaterias[i].Nombre %>
+                                    </option>
+                                    <% } %>
+                            </select>
+                        </div>
+                        <div class="mb-3 me-2">
+                            <label for="tfCuatrimestre" class="form-label">Cuatrimestre</label>
+                            <select class="form-select" id="tfCuatrimestre" name="tfCuatrimestre" required>
+                                <option value="" selected disabled>Selecciona un cuatrimestre</option>
+                                <option value="1">1° Cuatrimestre</option>
+                                <option value="2">2° Cuatrimestre</option>
+                                <option value="3">3° Cuatrimestre</option>
+                                <option value="4">4° Cuatrimestre</option>
+                                <option value="5">5° Cuatrimestre</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Mostrar Calificaciones</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabla de calificaciones -->
+            <div class="row mt-3">
+                <div class="col">
+                    <h2>Calificaciones por Parcial</h2>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Alumno</th>
+                                <th>Parcial 1</th>
+                                <th>Parcial 2</th>
+                                <th>Parcial 3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Alumno 1</td>
+                                <td>90</td>
+                                <td>85</td>
+                                <td>92</td>
+                            </tr>
+                            <tr>
+                                <td>Alumno 2</td>
+                                <td>78</td>
+                                <td>88</td>
+                                <td>76</td>
+                            </tr>
+                            <!-- Agregar más filas aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <%- include('templates/footer.html') %>
+            <%- include('templates/librariesJS.html') %>
+                <script src="/js/alumnos.js"></script>
+</body>
+
+</html>
+
+|---------------------------------------------------------------------------|
+| Matricula | Alumnos | Promedios de "materia" | Promedio |
+| | | parcial1 | parcial2 | parcial3 | |
+|---------------------------------------------------------------------------|
+| | | | | | |
+|---------------------------------------------------------------------------|
+| | | | | | |
+|---------------------------------------------------------------------------|
+| | | | | | |
+|---------------------------------------------------------------------------|
+| | Promedio Grupal | | | | |
+|---------------------------------------------------------------------------|
