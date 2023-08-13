@@ -5,75 +5,187 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('templates/librariesCSS.html') %>
-    <title>
-        <%= titulo %>
-    </title>
+        <title>
+            <%= titulo %>
+        </title>
 </head>
 
 <body>
     <%- include('templates/header.html') %>
 
-    <div class="container">
-        <h1><%= titulo %></h1>
-            <h3 class="mb-3">Tabla Alumnos</h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Matricula</th>
-                        <th>Nombre</th>
-                        <th>Paterno</th>
-                        <th>Materno</th>
-                        <th>Genero</th>
-                        <th>Fecha de Nacimiento</th>
-                        <th>Edad</th>
-                        <th>Domicilio</th>
-                        <th colspan="2">Opciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for(var i=0; i < data.length; i++) { %>
-                        <tr>
-                            <td>
-                                <%= data[i].Matricula %>
-                            </td>
-                            <td>
-                                <%= data[i].Nombre %>
-                            </td>
-                            <td>
-                                <%= data[i].Paterno %>
-                            </td>
-                            <td>
-                                <%= data[i].Materno %>
-                            </td>
-                            <td>
-                                <%= data[i].Genero %>
-                            </td>
-                            <td>
-                                <%= new Date(data[i].FechaNac).toLocaleDateString() %>
-                            </td>
-                            <td>
-                                <%= data[i].Edad %>
-                            </td>
-                            <td>
-                                Col: <%= data[i].Colonia %>, C: <%= data[i].Calle %>, N: <%= data[i].Numero %>
-                            </td>
-                            <td width="50">
-                                <form action="/alumnos/editar" method="post">
-                                    <input type="hidden" name="tfNL" value="<%= data[i].NL %>">
-                                    <button type="submit" class="btn btn-sm btn-warning">Editar</button>
-                                </form>
-                            </td>
-                            <td width="50">
-                                <a href="/alumnos/eliminar/<%= data[i].NL %>" class="btn btn-sm btn-danger">Eliminar</a>
-                            </td>
-                        </tr>
-                        <% } %>
-                </tbody>
-            </table>
-    </div>
+        <div class="container mt-5">
+            <div class="row">
+                <h1 class="text-center mb-4" id="tituloPrincipal">
+                   Alumnos
+                </h1>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="filtroSexo" class="form-label">Filtrar por Cuatrimestre</label>
+                        <select class="form-select" id="filtroSexo">
+                            <option value="0" selected >Todos Los Alumnos</option>
+                            <option value="M"> Hombres </option>
+                            <option value="F"> Mujeres </option>
+                            
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="buscador" class="form-label">Buscar</label>
+                        <input type="text" class="form-control" id="buscador" placeholder="Buscar por nombre">
+                    </div>
+                </div>
 
-    <%- include('templates/footer.html') %>
-    <%- include('templates/librariesJS.html') %>
+                <div class="col-md-6 text-end">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop" id="modalAlumnos">
+                        Agregar Nuevo
+                    </button>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12" id="content">
+                    <h3 class="mb-3">Tabla ALUMNOS</h3>
+                    <table class="table table-bordered" id="TablaAlumnos">
+                        <thead>
+                            <tr>
+                                <th>Matricula</th>
+                                <th>Nombre</th>
+                                <th>Paterno</th>
+                                <th>Materno</th>
+                                <th>Genero</th>
+                                <th>Fecha de Nacimiento</th>
+                                <th style="display: none;">Fecha de OCULTO</th>
+                                <th>Edad</th>
+                                <th>Domicilio</th>
+                                <th colspan="2">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(var i=0; i < data.length; i++) { %>
+                                <tr id="<%= data[i].Matricula %>">
+                                    <td >
+                                        <%= data[i].Matricula %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].Nombre %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].Paterno %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].Materno %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].Genero %>
+                                    </td>
+                                    <td>
+                                        <%= new Date(data[i].FechaNac).toLocaleDateString() %>
+                                    </td>
+                                    <td style="display: none;">
+                                        <%= data[i].FechaNac %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].Edad %>
+                                    </td>
+                                    
+                                    <td>
+                                        Col: <%= data[i].Colonia %>, C: <%= data[i].Calle %>, N: <%= data[i].Numero %>
+                                    </td>
+                                    <td width="50">
+                                        <button class="btn btn-sm btn-warning editarAlumno"
+                                        data-matricula="<%= data[i].Matricula %>">Editar</button>
+                                    </td>
+                                    <td width="50">
+                                        <button class="btn btn-sm btn-danger eliminarAlumno" data-matricula="<%= data[i].Matricula %>">Eliminar</button>
+
+                                    </td>
+                                </tr>
+                                <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Datos del alumno</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formularioAlumno" action="/alumnos/agregar" method="post">
+                            <div class="mb-3">
+                                <label for="tfMatricula" class="form-label">Matricula</label>
+                                <input type="text" class="form-control" id="tfMatricula" name="tfMatricula" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tfNombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="tfNombre" name="tfNombre" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tfPaterno" class="form-label">Apellido Paterno</label>
+                                <input type="text" class="form-control" id="tfPaterno" name="tfPaterno" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tfMaterno" class="form-label">Apellido Materno</label>
+                                <input type="text" class="form-control" id="tfMaterno" name="tfMaterno" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="tfSexo" class="form-label">Sexo</label>
+                                    <select class="form-select" id="tfSexo" name="tfSexo" required>
+                                        <option value="" selected disabled>Selecciona el Género</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Femenino</option>
+                                        <option value="N">Prefiero no decirlo</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="tfFechaNac" class="form-label">F Nacimiento</label>
+                                    <input type="date" class="form-control" id="tfFechaNac" name="tfFechaNac" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="tfEdad" class="form-label">Edad</label>
+                                    <input type="number" class="form-control" id="tfEdad" name="tfEdad" required>
+                                </div>
+                            </div>
+                            <h5>Domicilio del Alumno</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="tfColonia" class="form-label">Colonia</label>
+                                    <input type="text" class="form-control" id="tfColonia" name="tfColonia" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="tfCalle" class="form-label">Calle</label>
+                                    <input type="text" class="form-control" id="tfCalle" name="tfCalle" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="tfNumero" class="form-label">Numero</label>
+                                    <input type="number" class="form-control" id="tfNumero" name="tfNumero" required>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success" id="form-btn-agregar">Registrar</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <%- include('templates/footer.html') %>
+            <%- include('templates/librariesJS.html') %>
+                <script src="/js/alumnos.js"></script>
+
+
 </body>
 
 </html>

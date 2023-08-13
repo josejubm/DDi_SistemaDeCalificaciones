@@ -54,26 +54,41 @@ controlador.mostrarPorCuatrimestre = (req, res) => {
             if (error) {
                 res.json({ error: error.message });
             }
-
             // Construir la tabla HTML con los resultados
-            let tablaHtml = "<table class='table table-bordered' id='TablaMaterias'>";
-            tablaHtml += "<thead><tr><th>N</th><th>Clave Mat</th><th>Nombre</th><th>Cuatrimestre</th><th colspan='2'>Opciones</th></tr></thead>";
-            tablaHtml += "<tbody>";
+            let tablaHtml = `
+    <table class="table table-bordered" id="TablaMaterias">
+        <thead>
+            <tr>
+                <th>N</th>
+                <th>Clave Mat</th>
+                <th>Nombre</th>
+                <th>Cuatrimestre</th>
+                <th colspan="2">Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+`;
 
             for (let i = 0; i < resultados.length; i++) {
-                tablaHtml += "<tr id='" + resultados[i].ClaveMat + "' >";
-                tablaHtml += "<td>" + (i + 1) + "</td>";
-                tablaHtml += "<td>" + resultados[i].ClaveMat + "</td>";
-                tablaHtml += "<td>" + resultados[i].Nombre + "</td>";
-                tablaHtml += "<td>" + resultados[i].Cuatrimestre + "</td>";
-                tablaHtml += "<td width='50'><button class='btn btn-sm btn-warning editarMateria' data-clave='" + resultados[i].ClaveMat + "'>Editar</button></td>";
-                tablaHtml += "<td width='50'><button class='btn btn-sm btn-danger eliminarMateria' data-clave=" + resultados[i].ClaveMat + ">Eliminar</button></td>";
-                tablaHtml += "</tr>";
+                tablaHtml += `
+        <tr id="'${resultados[i].ClaveMat}'">
+            <td>${i + 1}</td>
+            <td>${resultados[i].ClaveMat}</td>
+            <td>${resultados[i].Nombre}</td>
+            <td>${resultados[i].Cuatrimestre}</td>
+            <td width="50"><button class="btn btn-sm btn-warning editarMateria" data-clave="${resultados[i].ClaveMat}">Editar</button></td>
+            <td width="50"><button class="btn btn-sm btn-danger eliminarMateria" data-clave="${resultados[i].ClaveMat}">Eliminar</button></td>
+        </tr>
+    `;
             }
 
-            tablaHtml += "</tbody></table>";
+            tablaHtml += `
+        </tbody>
+    </table>
+`;
 
             res.send(tablaHtml);
+
         });
     });
 };
