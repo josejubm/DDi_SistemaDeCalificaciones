@@ -14,16 +14,19 @@
                     <a class="nav-link" href="/materias">MATERIAS</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">CALIFICACIONES</a>
+                    <a class="nav-link" href="/calificaciones">CALIFICACIONES</a>
                 </li>
             </ul>
         </div>
 
         <form action="/auth/cerrar" method="post">
             <p style="color: green;">
-                <% if(usuario) { %>
-                    Hola, Usuario: <%= usuario %>
-                        <% } %>
+                <% if (usuario) { %>
+                    Hola, Usuario: <%= usuario %> <br>
+                    Nombre Completo: <%= datosUsuario.Nombre + datosUsuario.Paterno +datosUsuario.Materno%> <br>
+                    Cédula: <%= datosUsuario.CProfesional %>
+                <% } %>
+                
             </p>
             <button type="submit" class="close btn btn-danger" aria-label="Close">
                 salir<span aria-hidden="true">&times;</span>

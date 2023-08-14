@@ -13,6 +13,7 @@ controlador.mostrar = (req, res) => {
             if (usuario) res.render("materias.ejs", {
                 data: resultados,
                 usuario,
+                datosUsuario: req.session.datos,
                 titulo: "INICIO MATERIAS"
             });
             else res.redirect("/");

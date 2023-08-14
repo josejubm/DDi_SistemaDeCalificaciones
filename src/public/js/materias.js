@@ -167,13 +167,6 @@ $(document).ready(function () {
             "Materias del 3° Cuatrimestre",
             "Materias del 4° Cuatrimestre",
             "Materias del 5° Cuatrimestre",
-            "Materias del 6° Cuatrimestre",
-            "Materias del 7° Cuatrimestre",
-            "Materias del 8° Cuatrimestre",
-            "Materias del 9° Cuatrimestre",
-            "Materias del 10° Cuatrimestre",
-            "Materias del 11° Cuatrimestre",
-            "Materias del 12° Cuatrimestre Final"
         ];
 
         actualizarTablaMaterias(cuatrimestreSeleccionado);

@@ -6,7 +6,18 @@ const authMiddleware = require("../libraries/authMiddleware");
 // Aplicar el middleware de verificación de sesión a todas las rutas de /calificaciones
 route.use(authMiddleware.verificarSesion);
 
+
 // Ruta para la página de calificaciones
-route.get("/", controladorCalificaciones.mostrarMaterias);
+route.get("/", function(req, res) {
+    res.render("calificaciones.ejs", {
+        titulo: "Calificaciones",
+        usuario: req.session.usuario,
+        datosUsuario: req.session.datos
+    });
+});
+
+route.get("/materias", controladorCalificaciones.mostrarMaterias);
+
+route.post("/mostrarCal", controladorCalificaciones.mostrarCalificacionesMateria);
 
 module.exports = route;

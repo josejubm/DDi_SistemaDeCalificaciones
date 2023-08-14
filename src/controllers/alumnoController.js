@@ -15,6 +15,7 @@ controlador.mostrar = (req, res) => {
       if (usuario) res.render("alumnos.ejs", {
         data: resultados,
         usuario,
+        datosUsuario: req.session.datos,
         titulo: "INICIO AlUMNOS"
       });
       else res.redirect("/");

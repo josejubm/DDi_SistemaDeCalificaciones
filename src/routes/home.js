@@ -9,7 +9,8 @@ route.use(authMiddleware.verificarSesion);
 route.get("/", function(req, res) {
     res.render("home.ejs", {
         titulo: "HOME",
-        usuario: req.session.usuario
+        usuario: req.session.usuario,
+        datosUsuario: req.session.datos
     });
 });
 

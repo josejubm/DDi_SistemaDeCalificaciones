@@ -23,19 +23,7 @@
             <!-- Formulario para seleccionar materia y cuatrimestre -->
             <div class="row mt-3">
                 <div class="col">
-                    <form id="seleccionForm" method="post" action="SeleccionCalificacionesServlet"
-                        class="d-flex align-items-end">
-                        <div class="mb-3 me-2">
-                            <label for="tfMateria" class="form-label">Materia</label>
-                            <select class="form-select" id="tfMateria" name="tfMateria" required>
-                                <option value="" disabled selected>Seleccione una materia</option>
-                                <% for(var i=0; i < dataMaterias.length; i++) { %>
-                                    <option value="<%= dataMaterias[i].ClaveMat %>">
-                                        <%= dataMaterias[i].Nombre %>
-                                    </option>
-                                    <% } %>
-                            </select>
-                        </div>
+                    <form id="seleccionForm" class="d-flex align-items-end">
                         <div class="mb-3 me-2">
                             <label for="tfCuatrimestre" class="form-label">Cuatrimestre</label>
                             <select class="form-select" id="tfCuatrimestre" name="tfCuatrimestre" required>
@@ -47,7 +35,15 @@
                                 <option value="5">5° Cuatrimestre</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Mostrar Calificaciones</button>
+                        <div class="mb-3 me-2">
+                            <label for="tfMateria" class="form-label">Materia</label>
+                            <select class="form-select" id="tfMateria" name="tfMateria" disabled required>
+                                <option value="" disabled selected>Seleccione una materia</option>
+                            </select>
+                        </div>
+                        
+                        <input type="button" class="btn btn-primary" value="Mostrar Calificaciones"
+                            id="mostrarCalificaciones">
                     </form>
                 </div>
             </div>
@@ -55,39 +51,23 @@
             <!-- Tabla de calificaciones -->
             <div class="row mt-3">
                 <div class="col">
-                    <h2>Calificaciones por Parcial</h2>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Alumno</th>
-                                <th>Parcial 1</th>
-                                <th>Parcial 2</th>
-                                <th>Parcial 3</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Alumno 1</td>
-                                <td>90</td>
-                                <td>85</td>
-                                <td>92</td>
-                            </tr>
-                            <tr>
-                                <td>Alumno 2</td>
-                                <td>78</td>
-                                <td>88</td>
-                                <td>76</td>
-                            </tr>
-                            <!-- Agregar más filas aquí -->
-                        </tbody>
-                    </table>
+                    <h2 id="tituloTabla">Calificaciones por Materia </h2>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="buscador" class="form-label">Buscar</label>
+                            <input type="text" class="form-control" id="buscador" placeholder="Buscar por nombre">
+                        </div>
+                    </div>
+                    <div id="MostrarTablaCalificaciones">
+
+                    </div>
                 </div>
             </div>
         </div>
 
         <%- include('templates/footer.html') %>
             <%- include('templates/librariesJS.html') %>
-                <script src="/js/alumnos.js"></script>
+                <script src="/js/calificaciones.js"></script>
 </body>
 
 </html>
