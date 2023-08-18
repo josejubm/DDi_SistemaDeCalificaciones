@@ -1,42 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%- include('templates/librariesCSS.html') %>
-        <title>
-            <%= titulo %>
-        </title>
-        <style>
-            body {
-                background-color: #6a9eda;
-                /* Fondo pastel azul */
-            }
-        </style>
-</head>
-
-<body class="d-flex align-items-center justify-content-center vh-100">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="text-center mb-4">Iniciar Sesión</h2>
-                <form method="post" action="/auth/iniciarD" >
-                    <div class="mb-3">
-                        <label for="usuario" class="form-label">Usuario</label>
-                        <input type="text" class="form-control" id="usuario" name="tfUsuario" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="contrasena" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="tfPassword" required>
-                    </div>
-                    <button type="submit" class="btn btn-success w-100">Ingresar</button>
-                </form>
-            </div>
-        </div>
+<div class="wrapper">
+    <div class="logo">
+        <img src="/img/alumnos.png" alt="">
     </div>
+    <div class="text-center mt-4 name">
+        Sistema Calificaciones
+    </div>
+    <%- include('templates/librariesCSS.html') %>
 
-    <%- include('templates/librariesJS.html') %>
-</body>
-
-</html>
+    <form class="p-3 mt-3" action="/auth/iniciarD" method="post">
+        <div class="form-field d-flex align-items-center">
+            <span class="far fa-user"></span>
+            <input type="text" name="tfUsuario" id="userName" placeholder="Nombre">
+        </div>
+        <div class="form-field d-flex align-items-center">
+            <span class="fas fa-key"></span>
+            <input type="password" name="tfPassword" id="pwd" placeholder="Contraseña">
+        </div>
+        <button type="submit" class="btn mt-3">Iniciar Sesion</button>
+    </form>
+    
+</div>
+<%- include('templates/librariesJS.html') %>
