@@ -46,6 +46,8 @@ controlador.mostrarCalificacionesMateria = (req, res) => {
     });
 };
 
+
+
 controlador.agregar = (req, res) => {
     const nuevoAlumno = {
         Matricula: req.body.tfMatricula,
@@ -101,10 +103,6 @@ controlador.agregar = (req, res) => {
     });
 };
 
-
-
-
-
 controlador.editar = (req, res) => {
     const { Matricula_old } = req.params;
     const nuevaInfo = {
@@ -156,23 +154,6 @@ controlador.editar = (req, res) => {
         );
     });
 };
-
-
-controlador.eliminar = (req, res) => {
-    const { Matricula, Genero } = req.query;
-
-    req.getConnection((errorConexion, conn) => {
-        if (errorConexion) throw errorConexion;
-
-        conn.query("DELETE alumnos, domicilios FROM alumnos JOIN domicilios ON alumnos.IdDomicilio = domicilios.Id WHERE alumnos.Matricula = ?", [Matricula], (errorEliminacion, resultados) => {
-            if (errorEliminacion) {
-                res.json({ error: errorEliminacion.message });
-            }
-            res.send(Genero);
-        });
-    });
-};
-
 
 
 module.exports = controlador;

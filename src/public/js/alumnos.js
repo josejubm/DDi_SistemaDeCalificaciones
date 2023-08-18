@@ -11,7 +11,6 @@ $(document).ready(function () {
 
             if (matriculaResaltar) {
                 const filaResaltar = $("#" + matriculaResaltar);
-
                 if (filaResaltar.length > 0) {
                     // Agrega el resaltado a la fila específica
                     filaResaltar.css("background-color", "#a0d995"); // Cambia el color según tus preferencias
@@ -55,16 +54,16 @@ $(document).ready(function () {
         $("#formularioAlumno").attr("action", "");
 
         $("#tfMatricula").val(celdas.eq(0).text().trim());
-        $("#tfNombre").val(celdas.eq(1).text().trim());
-        $("#tfPaterno").val(celdas.eq(2).text().trim());
-        $("#tfMaterno").val(celdas.eq(3).text().trim());
-        $("#tfSexo").val(celdas.eq(4).text().trim());
+        $("#tfNombre").val(celdas.eq(2).text().trim());
+        $("#tfPaterno").val(celdas.eq(3).text().trim());
+        $("#tfMaterno").val(celdas.eq(4).text().trim());
+        $("#tfSexo").val(celdas.eq(5).text().trim());
         $("#tfFechaNac").val(new Date(celdas.eq(6).text().trim()).toLocaleDateString('en-CA'));
-        $("#tfEdad").val(celdas.eq(7).text().trim());
+        $("#tfEdad").val(celdas.eq(8).text().trim());
 
 
 
-        var domicilioText = celdas.eq(8).text().trim();
+        var domicilioText = celdas.eq(9).text().trim();
         var domicilioParts = domicilioText.split(",");
         $("#tfColonia").val(domicilioParts[0].split(":")[1].trim());
         $("#tfCalle").val(domicilioParts[1].split(":")[1].trim());
@@ -146,18 +145,30 @@ $(document).ready(function () {
             console.log(generoNuevo);
 
             if (generoNuevo !== generoDePagina) {
-                 generoNuevo = generoDePagina;
+                generoNuevo = generoDePagina;
             }
-
-            console.log(generoNuevo + " el local es:"+generoDePagina);
-
             // Llama a la función de actualización de la tabla con la matrícula nueva
             actualizarTablaAlumnos(generoNuevo, matriculaNueva);
             $("#staticBackdrop").modal("hide");
         });
-        
+
     });
 
+
+    $(document).on("click", ".mostrarMatriculaBtn", function () {
+        const matricula = $(this).data('matricula');
+        const nombre = $(this).closest('tr').find('td:eq(1)').text();
+
+
+        $("#NombreSpan").html(` ${nombre}`);
+
+        $("#matriculaSpan").html(matricula);
+
+        // Actualizar el valor del atributo data-matricula del botón de eliminación
+        $('#confirmarEliminacion').data('matricula', matricula);
+
+        $('#modalEliminar').modal('show');
+    });
 
     // Evento al hacer clic en el botón de eliminar Alumno
     $(document).on("click", ".eliminarAlumno", function () {
@@ -166,8 +177,6 @@ $(document).ready(function () {
         var celdas = fila.find("td");
         var genero = celdas.eq(4).text().trim();
         var generoDePagina = $("#filtroSexo").val();
-        console.log(genero);
-
         if (genero !== generoDePagina) {
             genero = generoDePagina;
         }
@@ -177,8 +186,8 @@ $(document).ready(function () {
             data: { Matricula: matricula, Genero: genero },
             type: "GET"
         }).done(function (resultado) {
-            console.log(resultado);
             actualizarTablaAlumnos(resultado);
+            $('#modalEliminar').modal('hide');
         });
     });
 
@@ -196,6 +205,15 @@ $(document).ready(function () {
         $("#tituloPrincipal").text(SexoText[sexoSeleccionado]);
     });
 
+    $('.imprimirAlumno').click(function () {
+        const matricula = $(this).data('matricula');
+        
+        // Envía una solicitud al servidor para generar el PDF del alumno
+        window.open(`/alumnos/pdf/${matricula}`, '_blank');
+      });
+    
+    
+
     // Evento para buscar por nombre
     $("#buscador").keyup(function () {
         var texto = $(this).val().toLowerCase();
@@ -207,4 +225,6 @@ $(document).ready(function () {
             }
         });
     });
+
+
 });
