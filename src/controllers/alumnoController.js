@@ -404,10 +404,28 @@ controlador.generarBoletaPDF = async (req, res) => {
                               <td>${calificacion.Parcial2}</td>
                               <td>${calificacion.Parcial3}</td>
                               <td>${calificacion.Extra}</td>
-                              <td>${(calificacion.Parcial1 + calificacion.Parcial2 + calificacion.Parcial3) / 3}</td>
+                              <td>${parseFloat(((calificacion.Parcial1 + calificacion.Parcial2 + calificacion.Parcial3) / 3).toFixed(1))}</td>
                             </tr>
                           `)
                           .join('')}
+                          <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>PROMEDIO CUATRIMESTRAL</td>
+                          <td>  ${
+                            parseFloat(
+                              (
+                                calificacionesPorCuatrimestre.reduce(
+                                  (sum, calificacion) =>
+                                    sum + (calificacion.Parcial1 + calificacion.Parcial2 + calificacion.Parcial3) / 3,
+                                  0
+                                ) / calificacionesPorCuatrimestre.length
+                              ).toFixed(1)
+                            )
+                          } </td>
+                          </tr>
                       </tbody>
                     </table>
                   `)
