@@ -16,14 +16,15 @@
             <!-- Banner -->
             <div class="row">
                 <div class="col">
-                    <h1>Calificaciones</h1>
+                    <h1>Captura o Modificacion de Calificaciones</h1>
                 </div>
             </div>
 
             <!-- Formulario para seleccionar materia y cuatrimestre -->
             <div class="row mt-3">
                 <div class="col">
-                    <form id="seleccionForm" class="d-flex align-items-end">
+                    <h3>Selecciona los parametros para capturar</h3>
+                    <form id="seleccionForm tablaCalificaciones" class="d-flex align-items-end">
                         <div class="mb-3 me-2">
                             <label for="tfCuatrimestre" class="form-label">Cuatrimestre</label>
                             <select class="form-select" id="tfCuatrimestre" name="tfCuatrimestre" required>
@@ -38,15 +39,29 @@
                         <div class="mb-3 me-2">
                             <label for="tfMateria" class="form-label">Materia</label>
                             <select class="form-select" id="tfMateria" name="tfMateria" disabled required>
-                                <option value="" disabled selected>Seleccione una materia</option>
+                                <option value=""  selected>Seleccione una materia</option>
                             </select>
                         </div>
-                        
-                        <input type="button" class="btn btn-primary" value="Mostrar Calificaciones"
-                            id="mostrarCalificaciones">
+
+                        <div class="mb-3 me-2">
+                            <label for="tfParcial" class="form-label">Parcial</label>
+                            <select class="form-select" id="tfParcial" name="tfParcial" disabled required>
+                                <option value="0" selected >Todos</option>
+                                <option value="1">Primer Parcial</option>
+                                <option value="2">Segundo Parcial</option>
+                                <option value="3">Tercer Parcial</option>
+                                <option value="4">Extraordinario</option>
+                            </select>
+                        </div>
+
+                        <div class="ms-auto">
+                            <input type="button" class="btn btn-outline-success" value="Mostrar Alumnos" disabled
+                                id="mostrarCalificaciones">
+                        </div>
                     </form>
                 </div>
             </div>
+
 
             <!-- Tabla de calificaciones -->
             <div class="row mt-3">
@@ -71,16 +86,3 @@
 </body>
 
 </html>
-
-|---------------------------------------------------------------------------|
-| Matricula | Alumnos | Promedios de "materia" | Promedio |
-| | | parcial1 | parcial2 | parcial3 | |
-|---------------------------------------------------------------------------|
-| | | | | | |
-|---------------------------------------------------------------------------|
-| | | | | | |
-|---------------------------------------------------------------------------|
-| | | | | | |
-|---------------------------------------------------------------------------|
-| | Promedio Grupal | | | | |
-|---------------------------------------------------------------------------|

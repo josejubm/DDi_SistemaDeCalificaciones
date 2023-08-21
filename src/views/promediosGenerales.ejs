@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('templates/librariesCSS.html') %>
+    <title><%= titulo %></title>
+</head>
+<style>
+  .rotated-header {
+    writing-mode: vertical-lr; /* Cambia la orientación del texto */
+    text-orientation: mixed; /* Ajusta la orientación de los caracteres */
+    width: 20px; /* Ajusta el ancho de las celdas */
+}
+
+</style>
+<body >
+    <%- include('templates/header.html') %>
+
+    <div class="" style="margin: 40px 60px 40px 60px; min-height: 700px;">
+        <div class="row">
+          <h2>Promedios Gnerales</h2>
+            <div class="col">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th></th>
+                    <th colspan="<%= data[0]?.promediosMaterias.length %>"> Promedios de materias</th>
+                  </tr>
+                  <tr>
+                    <th>Matricula</th>
+                    <th>Nombre</th>
+                    <% data[0]?.promediosMaterias.forEach(materia => { %>
+                        <th class="rotated-header"><%= `${materia.ClaveMat} - ${materia.Materia}` %></th>
+                    <% }) %>
+                    <th>Promedio Individual</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <% data.forEach(alumno => { %>
+                        <tr>
+                            <td><%= alumno.Matricula %></td>
+                            <td><%= `${alumno.Nombre} ${alumno.Paterno} ${alumno.Materno}` %></td>
+                            <% alumno.promediosMaterias.forEach(materia => { %>
+                                <td><%= materia.promedioMateria.toFixed(2) %></td>
+                            <% }) %>
+                            <td><%= alumno.promedioIndividual.toFixed(2) %></td>
+                        </tr>
+                    <% }) %>
+                    <tr>
+                        <td colspan="<%= 2 + data[0]?.promediosMaterias.length %>"></td>
+                        <td>Promedio Grupal:</td>
+                        <td><%= promedioGrupal.toFixed(2) %></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            
+            </div>
+        </div>
+    </div>
+
+    <%- include('templates/footer.html') %>
+    <%- include('templates/librariesJS.html') %>
+</body>
+
+</html>

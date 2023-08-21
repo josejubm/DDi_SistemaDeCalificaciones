@@ -16,8 +16,12 @@ route.get("/", function(req, res) {
     });
 });
 
+
 route.get("/materias", controladorCalificaciones.mostrarMaterias);
 
 route.post("/mostrarCal", controladorCalificaciones.mostrarCalificacionesMateria);
 
+
+
+route.get("/promedios", controladorCalificaciones.mostrarPromediosGenerales);
 module.exports = route;

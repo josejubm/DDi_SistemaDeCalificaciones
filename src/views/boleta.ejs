@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('templates/librariesCSS.html') %>
+        <title>Boleta de Calificaciones</title>
+
+</head>
+
+<body>
+
+    <!-- Encabezado -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Boleta de Calificaciones</a>
+    </nav>
+
+    <div class="container mt-5">
+        <!-- Datos del Alumno -->
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Alumno</h2>
+                <p>Nombre: Nombre del Alumno</p>
+                <p>Matrícula: MAT12345</p>
+                <p>Fecha de Nacimiento: 01/01/2000</p>
+                <p>Edad: 21</p>
+            </div>
+        </div>
+
+        <!-- Tabla de Calificaciones -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h2>Calificaciones</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>Parcial 1</th>
+                            <th>Parcial 2</th>
+                            <th>Parcial 3</th>
+                            <th>Promedio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Materia 1</td>
+                            <td>90</td>
+                            <td>85</td>
+                            <td>95</td>
+                            <td>90</td>
+                        </tr>
+                        <tr>
+                            <td>Materia 2</td>
+                            <td>75</td>
+                            <td>80</td>
+                            <td>70</td>
+                            <td>75</td>
+                        </tr>
+                        <tr>
+                            <td>Materia 3</td>
+                            <td>88</td>
+                            <td>92</td>
+                            <td>90</td>
+                            <td>90</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <%- include('templates/librariesJS.html') %>
+</body>
+
+</html>

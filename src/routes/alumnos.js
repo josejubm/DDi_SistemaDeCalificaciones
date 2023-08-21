@@ -12,4 +12,6 @@ route.get("/eliminar", controladorAlumno.eliminar);
 route.get("/mostrarGenero", controladorAlumno.mostrarPorGenero);
 route.post("/editar/:Matricula_old", controladorAlumno.editar);
 
+route.get('/pdf/:matricula', controladorAlumno.generarBoletaPDF);
+
 module.exports = route;

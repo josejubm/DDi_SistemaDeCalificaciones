@@ -1,13 +1,22 @@
 $(document).ready(function () {
 
     // Función para actualizar la tabla de materias
-    function actualizarTablaMaterias(cuatrimestre) {
+    function actualizarTablaMaterias(cuatrimestre, materiaEdited) {
         $.ajax({
             url: "/materias/mostrarC",
             data: { cuatrimestre: cuatrimestre },
             type: "GET"
         }).done(function (resultado) {
             $("#TablaMaterias").html(resultado);
+            if (materiaEdited) {
+                const filaResaltarMat = $("#" + materiaEdited);
+                if (filaResaltarMat.length > 0) {
+                    filaResaltarMat.css("background-color", "#a0d995");
+                    setTimeout(function () {
+                        filaResaltarMat.css("background-color", "");
+                    }, 2000); 
+                }
+            }
         });
     }
 
@@ -41,9 +50,50 @@ $(document).ready(function () {
         $("#tfNombre").val(celdas.eq(2).text().trim());
         $("#tfCuatrimestre").val(celdas.eq(3).text().trim());
 
-        $("#staticBackdrop").modal("show");
+        $("#staticBackdrop1").modal("show");
+    });
+    // Evento al hacer clic en el botón de editar materia (edición confirmada)
+    $(document).on("click", "#form-edit-btn", function () {
+        var nuevaClave = $("#tfClave").val();
+        var nuevoNombre = $("#tfNombre").val();
+        var nuevoCuatrimestre = $("#tfCuatrimestre").val();
+        var claveMatOld = $("#ClaveMat_old").val();
+        var cuatrimestreDePagina = $("#filtroCuatrimestre").val();
+
+        var datos = {
+            ClaveMat: nuevaClave,
+            Nombre: nuevoNombre,
+            Cuatrimestre: nuevoCuatrimestre,
+            ClaveMat_old: claveMatOld
+        };
+
+        $.ajax({
+            url: "/materias/editar/" + claveMatOld,
+            data: datos,
+            type: "POST"
+        }).done(function (resultado) {           
+             const claveNueva = resultado.ClaveMat;
+            let cuatri = resultado.Cuatrimestre;
+
+            if (cuatri !== cuatrimestreDePagina) {
+                cuatri = cuatrimestreDePagina;
+            }
+            actualizarTablaMaterias(cuatri, claveNueva);
+            $("#staticBackdrop1").modal("hide");
+        });
     });
 
+    $(document).on("click", ".mostrarModalClaveMat", function () {
+        const claveMat = $(this).data('clave');
+        $('#modalEliminarMat').modal('show');
+
+        const nombre = $(this).closest('tr').find('td:eq(2)').text();
+        const cuatrimestre = $(this).closest('tr').find('td:eq(3)').text();
+        $("#nameMat").html(nombre);
+        $("#cuatriMat").html(cuatrimestre);
+        $("#claveMatSpan").html(claveMat);
+        $('#confirmarEliminacionModal').data('clave', claveMat);
+    });
     // Evento al hacer clic en el botón de agregar nueva materia o abrir el formulario de agregar materia
     $("#modalMaterias").on("click", function () {
 
@@ -66,16 +116,19 @@ $(document).ready(function () {
             $("#tfNombre").val("");
             $("#tfCuatrimestre").val(cuatrimestreDePagina);
             $("#tfCuatrimestre").attr("selected", true);
-            $("#tfCuatrimestre").attr("disabled", true); 
+            $("#tfCuatrimestre").attr("disabled", true);
         } else {
             $("#tfCuatrimestre").val("");
             $("#tfClave").val("");
             $("#tfNombre").val("");
-            $("#tfCuatrimestre").removeAttr("disabled"); 
+            $("#tfCuatrimestre").removeAttr("disabled");
         }
 
-        $("#staticBackdrop").modal("show");
+        $("#staticBackdrop1").modal("show");
     });
+
+
+
 
     $(document).on("click", "#form-btn-agregar", function () {
 
@@ -104,37 +157,11 @@ $(document).ready(function () {
                 resultado = cuatrimestreDePagina;
             }
             actualizarTablaMaterias(resultado);
-            $("#staticBackdrop").modal("hide");
+            $("#staticBackdrop1").modal("hide");
         });
     });
 
-    // Evento al hacer clic en el botón de editar materia (edición confirmada)
-    $(document).on("click", "#form-edit-btn", function () {
-        var nuevaClave = $("#tfClave").val();
-        var nuevoNombre = $("#tfNombre").val();
-        var nuevoCuatrimestre = $("#tfCuatrimestre").val();
-        var claveMatOld = $("#ClaveMat_old").val();
-        var cuatrimestreDePagina = $("#filtroCuatrimestre").val();
 
-        var datos = {
-            ClaveMat: nuevaClave,
-            Nombre: nuevoNombre,
-            Cuatrimestre: nuevoCuatrimestre,
-            ClaveMat_old: claveMatOld
-        };
-
-        $.ajax({
-            url: "/materias/editar/" + claveMatOld,
-            data: datos,
-            type: "POST"
-        }).done(function (resultado) {
-            if (resultado !== cuatrimestreDePagina) {
-                resultado = cuatrimestreDePagina;
-            }
-            actualizarTablaMaterias(resultado);
-            $("#staticBackdrop").modal("hide");
-        });
-    });
 
     // Evento al hacer clic en el botón de eliminar materia
     $(document).on("click", ".eliminarMateria", function () {
@@ -148,12 +175,14 @@ $(document).ready(function () {
             cuatrimestre = cuatrimestreDePagina;
         }
 
+        console.log(claveMat);
         $.ajax({
             url: "/materias/eliminar",
             data: { ClaveMat: claveMat, cuatrimestre: cuatrimestre },
             type: "GET"
         }).done(function (resultado) {
             actualizarTablaMaterias(resultado);
+            $('#modalEliminarMat').modal('hide');
         });
     });
 

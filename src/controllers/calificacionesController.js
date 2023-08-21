@@ -46,133 +46,154 @@ controlador.mostrarCalificacionesMateria = (req, res) => {
     });
 };
 
-controlador.agregar = (req, res) => {
-    const nuevoAlumno = {
-        Matricula: req.body.tfMatricula,
-        Nombre: req.body.tfNombre,
-        Paterno: req.body.tfPaterno, // Cambio realizado aquí
-        Materno: req.body.tfMaterno,
-        Genero: req.body.tfSexo, // Cambio realizado aquí
-        FechaNac: req.body.tfFechaNac, // Cambio realizado aquí
-        Edad: parseInt(req.body.tfEdad, 10),
-        IdDomicilio: null // Dejamos esto como null por ahora, lo actualizaremos después de insertar el domicilio
-    };
 
-    const nuevoDomicilio = {
-        Colonia: req.body.tfColonia,
-        Calle: req.body.tfCalle,
-        Numero: req.body.tfNumero
-    };
+/* const calcularPromediosGenrales = async (conn, matricula) => {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT ClaveMat, Parcial1, Parcial2, Parcial3, Extra
+            FROM calificaciones
+            WHERE Matricula = ?;
+        `;
+        conn.query(query, [matricula], async (error, resultados) => {
+            if (error) {
+                reject(error);
+            } else {
+                const promediosMaterias = [];
+                let promedioIndividual = 0;
 
-    req.getConnection((errorConexion, conn) => {
-        if (errorConexion) throw errorConexion;
-
-        conn.beginTransaction((errorTransaccion) => {
-            if (errorTransaccion) throw errorTransaccion;
-
-            conn.query("INSERT INTO domicilios SET ?", [nuevoDomicilio], (errorInsercionDomicilio, resultadoInsercionDomicilio) => {
-                if (errorInsercionDomicilio) {
-                    conn.rollback(() => {
-                        res.json({ error: errorInsercionDomicilio.message });
-                    });
-                } else {
-                    const idDomicilio = resultadoInsercionDomicilio.insertId;
-                    nuevoAlumno.IdDomicilio = idDomicilio;
-
-                    conn.query("INSERT INTO alumnos SET ?", [nuevoAlumno], (errorInsercionAlumno, resultadoInsercionAlumno) => {
-                        if (errorInsercionAlumno) {
-                            conn.rollback(() => {
-                                res.json({ error: errorInsercionAlumno.message });
-                            });
-                        } else {
-                            conn.commit((errorCommit) => {
-                                if (errorCommit) {
-                                    conn.rollback(() => {
-                                        throw errorCommit;
-                                    });
-                                }
-                                res.redirect("/alumnos");
-                            });
-                        }
-                    });
+                for (const row of resultados) {
+                    const { ClaveMat, Materia, Parcial1, Parcial2, Parcial3, Extra } = row;
+                    const promedioMateria = (Parcial1 + Parcial2 + Parcial3 + Extra) / 4;
+                    promediosMaterias.push({ ClaveMat, promedioMateria });
+                    promedioIndividual += promedioMateria;
                 }
-            });
+
+                promedioIndividual /= resultados.length;
+
+                // Obtener la lista de materias y sus promedios para el alumno
+                const queryMaterias = `
+                                        SELECT m.Nombre AS Materia, c.ClaveMat, c.Parcial1, c.Parcial2, c.Parcial3, c.Extra
+                                        FROM calificaciones c
+                                        INNER JOIN materias m ON c.ClaveMat = m.ClaveMat
+                                        WHERE c.Matricula = ?;
+                                    `;
+
+                const resultadosMaterias = await conn.query(queryMaterias, [matricula]);
+
+                resolve({ promediosMaterias, promedioIndividual, materias: resultadosMaterias });
+            }
+        });
+    });
+}; */
+
+const calcularPromediosGenrales = async (conn, matricula) => {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT m.ClaveMat, m.Nombre AS Materia, c.Parcial1, c.Parcial2, c.Parcial3, c.Extra
+            FROM calificaciones c
+            INNER JOIN materias m ON c.ClaveMat = m.ClaveMat
+            WHERE c.Matricula = ?;
+        `;
+        conn.query(query, [matricula], async (error, resultados) => {
+            if (error) {
+                reject(error);
+            } else {
+                const promediosMaterias = [];
+                let promedioIndividual = 0;
+
+                for (const row of resultados) {
+                    const { ClaveMat, Materia, Parcial1, Parcial2, Parcial3, Extra } = row;
+                    const promedioMateria = (Parcial1 + Parcial2 + Parcial3 + Extra) / 4;
+                    promediosMaterias.push({ ClaveMat, Materia, promedioMateria });
+                    promedioIndividual += promedioMateria;
+                }
+
+                promedioIndividual /= resultados.length;
+                resolve({ promediosMaterias, promedioIndividual });
+            }
         });
     });
 };
 
 
+function calcularPromedioGrupal(resultados) {
+    let totalPromediosIndividuales = 0;
 
+    // Suma todos los promedios individuales
+    for (const row of resultados) {
+        totalPromediosIndividuales += row.PromedioIndividual;
+    }
 
+    // Calcula el promedio grupal dividiendo entre la cantidad de estudiantes
+    const promedioGrupal = totalPromediosIndividuales / resultados.length;
 
-controlador.editar = (req, res) => {
-    const { Matricula_old } = req.params;
-    const nuevaInfo = {
-        Matricula: req.body.Matricula,
-        Nombre: req.body.Nombre,
-        Paterno: req.body.Paterno,
-        Materno: req.body.Materno,
-        Genero: req.body.Genero,
-        FechaNac: req.body.FechaNac,
-        Edad: req.body.Edad,
-        Colonia: req.body.Colonia,
-        Calle: req.body.Calle,
-        Numero: req.body.Numero
-    };
-    req.getConnection((err, conn) => {
-        if (err) {
-            console.error("Error en la conexión:", err);
-            return res.status(500).send("Error en la conexión");
-        }
-        conn.query(
-            "UPDATE alumnos INNER JOIN domicilios ON alumnos.IdDomicilio = domicilios.Id SET ? WHERE alumnos.Matricula = ?",
-            [nuevaInfo, Matricula_old],
-            (error, resultados) => {
-                if (error) {
-                    console.error("Error en la consulta:", error);
-                    return res.status(500).send("Error en la consulta");
+    return promedioGrupal;
+}
+
+controlador.mostrarPromediosGenerales = (req, res) => {
+    req.getConnection(async (errorConexion, conn) => {
+        if (errorConexion) throw errorConexion;
+        const query = `
+            SELECT alumnos.Matricula, alumnos.Nombre, alumnos.Paterno, alumnos.Materno,
+            AVG((c.Parcial1 + c.Parcial2 + c.Parcial3 + c.Extra) / 4) AS PromedioIndividual
+            FROM alumnos
+            INNER JOIN calificaciones c ON alumnos.Matricula = c.Matricula
+            GROUP BY alumnos.Matricula;
+        `;
+
+        conn.query(query, async (error, resultados) => {
+            if (error) {
+                res.json(error);
+            }
+
+            const usuario = req.session.usuario;
+            if (usuario) {
+                const datosPromedios = [];
+
+                for (const row of resultados) {
+                    const { Matricula, Nombre, Paterno, Materno, PromedioIndividual } = row;
+                    const { promediosMaterias, promedioIndividual, materias } = await calcularPromediosGenrales(conn, Matricula);
+                    datosPromedios.push({
+                        Matricula,
+                        Nombre,
+                        Paterno,
+                        Materno,
+                        promediosMaterias,
+                        promedioIndividual,
+                        materias: Array.isArray(materias) ? materias.map(materia => ({
+                            ClaveMat: materia.ClaveMat,
+                            Materia: materia.Materia,
+                            Parcial1: materia.Parcial1,
+                            Parcial2: materia.Parcial2,
+                            Parcial3: materia.Parcial3,
+                            Extra: materia.Extra
+                        })) : []
+
+                    });
                 }
 
-                // Obtén la matrícula nueva y el género para retornar
-                conn.query(
-                    "SELECT Matricula, Genero FROM alumnos WHERE Matricula = ?",
-                    [nuevaInfo.Matricula],
-                    (error, nuevaFila) => {
-                        if (error) {
-                            console.error("Error en la consulta:", error);
-                            return res.status(500).send("Error en la consulta");
-                        }
-
-                        // Retorna la matrícula nueva y el género
-                        const resultado = {
-                            MatriculaNueva: nuevaFila[0].Matricula,
-                            Genero: nuevaFila[0].Genero
-                        };
-                        res.json(resultado);
-                    }
-                );
+                const promedioGrupal = calcularPromedioGrupal(resultados);
+                res.render("promediosGenerales.ejs", {
+                    data: datosPromedios,
+                    usuario,
+                    datosUsuario: req.session.datos,
+                    titulo: "Promedios Generales",
+                    promedioGrupal: promedioGrupal
+                });
+            } else {
+                res.redirect("/");
             }
-
-        );
-    });
-};
-
-
-controlador.eliminar = (req, res) => {
-    const { Matricula, Genero } = req.query;
-
-    req.getConnection((errorConexion, conn) => {
-        if (errorConexion) throw errorConexion;
-
-        conn.query("DELETE alumnos, domicilios FROM alumnos JOIN domicilios ON alumnos.IdDomicilio = domicilios.Id WHERE alumnos.Matricula = ?", [Matricula], (errorEliminacion, resultados) => {
-            if (errorEliminacion) {
-                res.json({ error: errorEliminacion.message });
-            }
-            res.send(Genero);
         });
     });
 };
 
 
+/* res.render("promediosGenerales.ejs", {
+    data: datosPromedios,
+    usuario,
+    datosUsuario: req.session.datos,
+    titulo: "Promedios Generales",
+    promedioGrupal: promedioGrupal
+}); */
 
 module.exports = controlador;
