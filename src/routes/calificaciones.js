@@ -21,7 +21,7 @@ route.get("/materias", controladorCalificaciones.mostrarMaterias);
 
 route.post("/mostrarCal", controladorCalificaciones.mostrarCalificacionesMateria);
 
-
+route.post("/modificar", controladorCalificaciones.actualizarCalificacion);
 
 route.get("/promedios", controladorCalificaciones.mostrarPromediosGenerales);
 module.exports = route;
