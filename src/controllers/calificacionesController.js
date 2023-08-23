@@ -16,6 +16,35 @@ controlador.mostrarMaterias = (req, res) => {
     });
 };
 
+
+controlador.actualizarCalificacion = (req, res) => {
+    const matricula = req.body.Matricula;
+    const parcial = req.body.Parcial; // Cambiamos parcialActual a parcial
+    const nuevoValor = req.body.NuevaCal;
+
+    req.getConnection((errorConexion, conn) => {
+        if (errorConexion) throw errorConexion;
+
+        const query = `
+            UPDATE calificaciones
+            SET ${parcial} = ?
+            WHERE Matricula = ?`;
+
+        const queryParams = [nuevoValor, matricula];
+
+        conn.query(query, queryParams, (error, resultados) => {
+            if (error) {
+                return res.status(500).json({ error: error.message });
+            }
+
+            return res.json({ success: true });
+        });
+    });
+};
+
+
+
+
 controlador.mostrarCalificacionesMateria = (req, res) => {
     const cuatrimestre = req.body.cuatrimestre;
     const materia = req.body.materia;

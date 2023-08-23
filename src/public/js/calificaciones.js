@@ -159,27 +159,25 @@ $(document).ready(function () {
          });
      }); */
 
+    // Evento para mostrar calificaciones
+    $("#mostrarCalificaciones").on("click", function () {
+        var materiaSeleccionada = $("#tfMateria").val();
+        var cuatrimestreSeleccionado = $("#tfCuatrimestre").val();
+        var parcialSeleccionado = $("#tfParcial").val();
 
-    $(document).ready(function () {
-        // Evento para mostrar calificaciones
-        $("#mostrarCalificaciones").on("click", function () {
-            var materiaSeleccionada = $("#tfMateria").val();
-            var cuatrimestreSeleccionado = $("#tfCuatrimestre").val();
-            var parcialSeleccionado = $("#tfParcial").val();
-
-            var datos = {
-                cuatrimestre: cuatrimestreSeleccionado,
-                materia: materiaSeleccionada,
-                parcial: parcialSeleccionado
-            };
-            $.ajax({
-                url: "/calificaciones/mostrarCal",
-                data: datos,
-                type: "POST",
-                dataType: "json"
-            }).done(function (resultados) {
-                // Construir la tabla HTML con los resultados de calificaciones
-                var tablaHtml = `<table class="table table-bordered" id="TablaCalificaciones">
+        var datos = {
+            cuatrimestre: cuatrimestreSeleccionado,
+            materia: materiaSeleccionada,
+            parcial: parcialSeleccionado
+        };
+        $.ajax({
+            url: "/calificaciones/mostrarCal",
+            data: datos,
+            type: "POST",
+            dataType: "json"
+        }).done(function (resultados) {
+            // Construir la tabla HTML con los resultados de calificaciones
+            var tablaHtml = `<table class="table table-bordered" id="TablaCalificaciones">
                         <thead>
                             <tr>
                                 <th>Matricula</th>
@@ -188,14 +186,14 @@ $(document).ready(function () {
                                 ${parcialSeleccionado === "0" || parcialSeleccionado === "2" ? '<th>Segundo Parcial</th>' : ''}
                                 ${parcialSeleccionado === "0" || parcialSeleccionado === "3" ? '<th>Tercer Parcial</th>' : ''}
                                 ${parcialSeleccionado === "0" || parcialSeleccionado === "4" ? '<th>Extraordinario</th>' : ''}
-                                <th><button id="modificarTodo" class="btn btn-outline-warning">Cambiar Todo</button></th>
+                                <th>Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
                 `;
 
-                for (var i = 0; i < resultados.length; i++) {
-                    tablaHtml += `
+            for (var i = 0; i < resultados.length; i++) {
+                tablaHtml += `
                         <tr id="${resultados[i].Matricula}">
                             <td>${resultados[i].Matricula}</td>
                             <td>${resultados[i].Nombre} ${resultados[i].Paterno} ${resultados[i].Materno}</td>
@@ -207,117 +205,235 @@ $(document).ready(function () {
                             <td><button class="btn btn-outline-warning modificarCal" data-id="${resultados[i].Matricula}">Cambiar</button></td>
                         </tr>
                     `;
-                }
+            }
 
-                tablaHtml += `
+            tablaHtml += `
                         </tbody>
                     </table>
                     <br>
                 `;
 
-                $("#MostrarTablaCalificaciones").html(tablaHtml);
+            $("#MostrarTablaCalificaciones").html(tablaHtml);
 
-                const CuatrimestreText = [
-                    "Todos los cuatrimestres",
-                    "1° Cuatrimestre",
-                    "2° Cuatrimestre",
-                    "3° Cuatrimestre",
-                    "4° Cuatrimestre",
-                    "5° Cuatrimestre",
-                ];
+            const CuatrimestreText = [
+                "Todos los cuatrimestres",
+                "1° Cuatrimestre",
+                "2° Cuatrimestre",
+                "3° Cuatrimestre",
+                "4° Cuatrimestre",
+                "5° Cuatrimestre",
+            ];
 
-                $("#tituloTabla").html(`Calificaciones de ${resultados[0].NombreMateria} del ${CuatrimestreText[cuatrimestreSeleccionado]}`);
+            $("#tituloTabla").html(`Calificaciones de ${resultados[0].NombreMateria} del ${CuatrimestreText[cuatrimestreSeleccionado]}`);
 
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log("Error en la solicitud AJAX:", textStatus, errorThrown);
-            });
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log("Error en la solicitud AJAX:", textStatus, errorThrown);
+        });
+    });
+
+    $(document).on("click", ".modificarCal", function () {
+        var matricula = $(this).data("id");
+        var fila = $("#" + matricula);
+        var celdas = fila.find("td");
+
+        var parcialesVisible = []; // Array para almacenar índices de columnas de parciales visibles
+        celdas.each(function (index) {
+            if (index > 1 && index < 3) {
+                parcialesVisible.push(index);
+                var valorAnterior = $(this).text();
+                $(this).data("valorAnterior", valorAnterior); // Guardar el valor actual en valorAnterior
+                $(this).html(`<input type="text" class="form-control" value="${valorAnterior}" />`);
+            } else if (index === 3) {
+                $(this).html(`
+                        <button class="btn btn-outline-secondary cancelarCambios">Cancelar</button>
+                        <button class="btn btn-outline-success confirmarCambios">Confirmar</button>
+                    `);
+            }
         });
 
-        // Evento para cambiar todos los valores de los parciales
-        $(document).on("click", "#modificarTodo", function () {
-            var filas = $("#TablaCalificaciones tbody tr");
+        // Agregar atributos de parciales visibles y matrícula al botón de Confirmar
+        $(".confirmarCambios").data("parcialesVisible", parcialesVisible);
+        $(".confirmarCambios").data("matricula", matricula);
+    });
 
-            filas.each(function () {
-                var fila = $(this);
-                var celdas = fila.find("td");
 
-                if (celdas.length > 0) {
-                    celdas.each(function (index) {
-                        if (index > 1) {
-                            var valorAnterior = $(this).text();
-                            $(this).html(`
-                                <input type="text" class="form-control" value="${valorAnterior}" />
-                                <button class="btn btn-outline-secondary cancelarCambios">Cancelar</button>
-                                <button class="btn btn-outline-success confirmarCambios">Confirmar</button>
-                            `);
-                        }
-                    });
+    $(document).on("click", ".cancelarCambios", function () {
+        var celdas = $(this).closest("tr").find("td");
+
+        celdas.each(function (index) {
+            var input = $(this).find("input");  // Encuentra el input en la celda
+
+            if (input.length > 0) {
+                var valorAnterior = $(this).data("valorAnterior");
+                $(input).remove();  // Elimina el input
+
+                console.log(valorAnterior);
+                $(this).html(valorAnterior);
+
+            } else if (index === 3) {
+                $(this).html(`
+                        <button class="btn btn-outline-warning modificarCal" data-id="${$(this).closest("tr").attr("id")}">Cambiar</button>
+                    `);
+            }
+        });
+    });
+
+
+   /*  $(document).on("click", ".confirmarCambios", function () {
+        var celdas = $(this).closest("tr").find("td");
+        var parcialesVisible = $(this).data("parcialesVisible");
+        var matricula = $(this).data("matricula");
+        var parcialActual = $("#tfParcial").val();
+
+        celdas.each(function (index) {
+            if ($(this).find("input").length > 0 && parcialesVisible.includes(index)) {
+                var nuevoValor = $(this).find("input").val();
+
+                let parcial = "";  // Utilizamos let en lugar de const para que pueda ser reasignada
+
+                if (parcialActual === 1) {
+                    parcial = "Parcial1";
+                } else if (parcialActual === 2) {
+                    parcial = "Parcial2";
+                } else if (parcialActual === 3) {
+                    parcial = "Parcial3";
+                } else {
+                    parcial = "Extra";
                 }
-            });
-        });
 
-        // Evento para cambiar un valor específico de parcial
-        $(document).on("click", ".modificarCal", function () {
-            var matricula = $(this).data("id");
-            var fila = $("#" + matricula);
+                console.log("Matrícula:", matricula);
+                console.log("Parcial numero:", parcialActual);
+                console.log("Parcial:", parcial);
+                console.log("Nuevo valor:", nuevoValor);
+
+                const datos = {
+                    Matricula: matricula,
+                    Parcial: parcial,
+                    NuevaCal: nuevoValor
+                };
+
+                $.ajax({
+                    url: "/calificaciones/modificar",
+                    data: datos,
+                    type: "POST",
+                    success: function (resultado) {
+                        console.log(resultado);
+
+                    },
+                    error: function (error) {
+                        console.log("Error:", error);
+                    }
+                });
+
+                $(this).html(nuevoValor);
+            } else if (index === 3) {
+                $(this).html(`
+                     <button class="btn btn-outline-warning modificarCal" data-id="${$(this).closest("tr").attr("id")}">Cambiar</button>
+                 `);
+            }
+        });
+    }); */
+
+
+     $(document).on("click", ".confirmarCambios", function () {
+         var celdas = $(this).closest("tr").find("td");
+         var parcialesVisible = $(this).data("parcialesVisible");
+         var matricula = $(this).data("matricula");
+        /*  var parcialActual = $("#tfParcial").val(); */
+        var parcialActual = parseInt($("#tfParcial").val());
+
+        let parcial = ""; // Utilizamos let en lugar de const para que pueda ser reasignada
+
+        if (parcialActual === 1) {
+            parcial = "Parcial1";
+        } else if (parcialActual === 2) {
+            parcial = "Parcial2";
+        } else if (parcialActual === 3) {
+            parcial = "Parcial3";
+        } else {
+            parcial = "Extra";
+        }
+
+         celdas.each(function (index) {
+             if ($(this).find("input").length > 0 && parcialesVisible.includes(index)) {
+                 var nuevoValor = $(this).find("input").val();
+ 
+                 console.log("Matrícula:", matricula);
+                 console.log("Parcial NUmero:", parcialActual); 
+                 console.log("Parcial text:", parcial);
+                 console.log("Nuevo valor:", nuevoValor);
+ 
+                 const datos = {
+                     Matricula: matricula,
+                     Parcial: parcial,
+                     NuevaCal: nuevoValor
+                 };
+ 
+                 $.ajax({
+                     url: "/calificaciones/modificar",
+                     data: datos,
+                     type: "POST",
+                     success: function (resultado) {
+                         console.log(resultado);
+ 
+                         // Mostrar alerta de éxito
+                         mostrarAlerta("La calificación ha sido modificada exitosamente.", "success");
+                     },
+                     error: function (error) {
+                         console.log("Error:", error);
+ 
+                         // Mostrar alerta de error
+                         mostrarAlerta("Hubo un error al modificar la calificación. Por favor, intenta de nuevo.", "danger");
+                     }
+                 });
+ 
+                 $(this).html(nuevoValor);
+             } else if (index === 3) {
+                 $(this).html(`
+                     <button class="btn btn-outline-warning modificarCal" data-id="${$(this).closest("tr").attr("id")}">Cambiar</button>
+                 `);
+             }
+         });
+     });
+
+    function mostrarAlerta(mensaje, tipo) {
+        // Eliminar alertas previas
+        $(".alert").remove();
+
+        // Crear la alerta
+        var alertHtml = `
+            <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+
+        // Agregar la alerta al contenedor adecuado (puede ser el body o un contenedor específico)
+        $("#alertContainer").append(alertHtml); // Cambia "#alertContainer" por el selector adecuado
+    }
+
+
+    // Evento para cambiar todos los valores de los parciales
+    $(document).on("click", "#modificarTodo", function () {
+        var filas = $("#TablaCalificaciones tbody tr");
+
+        filas.each(function () {
+            var fila = $(this);
             var celdas = fila.find("td");
 
-            var parcialesVisible = []; // Array para almacenar índices de columnas de parciales visibles
-            celdas.each(function (index) {
-                if (index > 1 && index < 6) {
-                    parcialesVisible.push(index);
-                    var valorAnterior = $(this).text();
-                    $(this).html(`<input type="text" class="form-control" value="${valorAnterior}" />`);
-                } else if (index === 6) {
-                    $(this).html(`
-                <button class="btn btn-outline-secondary cancelarCambios">Cancelar</button>
-                <button class="btn btn-outline-success confirmarCambios">Confirmar</button>
-            `);
-                }
-            });
-
-            // Agregar atributos de parciales visibles al botón de Confirmar
-            $(".confirmarCambios").data("parcialesVisible", parcialesVisible);
+            if (celdas.length > 0) {
+                celdas.each(function (index) {
+                    if (index > 1) {
+                        var valorAnterior = $(this).text();
+                        $(this).html(`
+                                        <input type="text" class="form-control" value="${valorAnterior}" />
+                                        <button class="btn btn-outline-secondary cancelarCambios">Cancelar</button>
+                                        <button class="btn btn-outline-success confirmarCambios">Confirmar</button>
+                                    `);
+                    }
+                });
+            }
         });
-
-        // Evento para cancelar los cambios
-        $(document).on("click", ".cancelarCambios", function () {
-            var celdas = $(this).closest("tr").find("td");
-
-            celdas.each(function (index) {
-                if ($(this).find("input").length > 0) {
-                    var valorAnterior = $(this).data("valorAnterior");
-                    $(this).html(valorAnterior);
-                } else if (index === 6) {
-                    $(this).html(`
-                <button class="btn btn-outline-warning modificarCal" data-id="${$(this).closest("tr").attr("id")}">Cambiar</button>
-            `);
-                }
-            });
-        });
-
-        // Evento para confirmar los cambios
-        $(document).on("click", ".confirmarCambios", function () {
-            var celdas = $(this).closest("tr").find("td");
-            var parcialesVisible = $(this).data("parcialesVisible");
-
-            celdas.each(function (index) {
-                if ($(this).find("input").length > 0 && parcialesVisible.includes(index)) {
-                    var nuevoValor = $(this).find("input").val();
-                    $(this).html(nuevoValor);
-                } else if (index === 6) {
-                    $(this).html(`
-                <button class="btn btn-outline-warning modificarCal" data-id="${$(this).closest("tr").attr("id")}">Cambiar</button>
-            `);
-                }
-            });
-        });
-
-
-
-
-
-        // ... (otros eventos y funciones si los necesitas)
     });
 
 });

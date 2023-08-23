@@ -13,6 +13,8 @@
 <body>
     <%- include('templates/header.html') %>
         <div class="container mt-5">
+            <div id="alertContainer"></div>
+
             <!-- Banner -->
             <div class="row">
                 <div class="col">
@@ -46,7 +48,7 @@
                         <div class="mb-3 me-2">
                             <label for="tfParcial" class="form-label">Parcial</label>
                             <select class="form-select" id="tfParcial" name="tfParcial" disabled required>
-                                <option value="0" selected >Todos</option>
+                                <!-- <option value="0" selected >Todos</option> -->
                                 <option value="1">Primer Parcial</option>
                                 <option value="2">Segundo Parcial</option>
                                 <option value="3">Tercer Parcial</option>
